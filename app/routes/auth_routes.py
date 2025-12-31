@@ -9,7 +9,7 @@ from ..models import User
 # Import request and response schemas
 from ..schemas import UserCreate, Token
 # Import authentication helper functions
-from ..auth import hash_password, verify_password, create_access_token
+from ..auth import hash_password, verify_password, create_access_token, get_current_user
 
 # Create an API router for authentication-related endpoints
 # All routes will be prefixed with /auth
@@ -26,40 +26,58 @@ def get_db():
 
 # ---------------------- USER REGISTRATION ----------------------
 
-# Endpoint to register a new user
+from pydantic import BaseModel
+
+class RegisterInput(BaseModel):
+    email: str
+    password: str
+
 @router.post("/register")
-def register(user: UserCreate, db: Session = Depends(get_db)):
-    # Check if a user with the same email already exists
+def register(user: RegisterInput, db: Session = Depends(get_db)):
+    # Check if email already registered
     existing = db.query(User).filter(User.email == user.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
-    # Create a new user with hashed password
+
+    # Create new user with hashed password
     new_user = User(
         email=user.email,
         hashed_password=hash_password(user.password)
     )
-    # Add user to database and commit transaction
     db.add(new_user)
     db.commit()
-    return {"message": "User registered successfully"}
+    db.refresh(new_user)
+
+    # 🔥 Optional: auto-login user after registration
+    token = create_access_token({"sub": new_user.email})
+
+    return {
+        "message": "User registered successfully",
+        "access_token": token,         # <-- Frontend can store instantly
+        "token_type": "bearer"
+    }
 
 
 # ---------------------- USER LOGIN ----------------------
 
-# Endpoint to authenticate user and generate JWT token
+from pydantic import BaseModel
+
+class LoginInput(BaseModel):
+    email: str
+    password: str
+
 @router.post("/login", response_model=Token)
-def login(user: UserCreate, db: Session = Depends(get_db)):
-    # Retrieve user from database using email
-    db_user = db.query(User).filter(User.email == user.email).first()
-    # Retrieve user from database using email
-    if not db_user or not verify_password(user.password, db_user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    # Generate JWT access token with email as subject
+def login(data: LoginInput, db: Session = Depends(get_db)):
+    # Find user using email
+    db_user = db.query(User).filter(User.email == data.email).first()
+
+    if not db_user or not verify_password(data.password, db_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
     token = create_access_token({"sub": db_user.email})
-    # Return token in standard bearer format
+
     return {"access_token": token, "token_type": "bearer"}
-from fastapi import Depends
-from ..auth import get_current_user
+
 
 # ---------------------- PROTECTED ROUTE ----------------------
 

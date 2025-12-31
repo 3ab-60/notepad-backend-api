@@ -1,29 +1,31 @@
-# Load environment variables from .env file
-# This allows secure access to sensitive configurations like SECRET_KEY
+# Load .env
 from dotenv import load_dotenv
 load_dotenv()
 
-# Import FastAPI framework
+# Imports: FastAPI server, CORS middleware, DB setup, and route modules (auth, notes & AI)
 from fastapi import FastAPI
-
-# Import database base and engine to create tables
+from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine
-
-# Import authentication routes
 from .routes.auth_routes import router as auth_router
-
-
-# Create database tables based on SQLAlchemy models
-# This runs once when the application starts
+from .routes.notes_routes import router as notes_router
+from .routes.ai_routes import router as ai_router
+# Create tables
 Base.metadata.create_all(bind=engine)
 
+# Initialize FastAPI app 
+app = FastAPI(title="Notepad Backend API")
 
-# Initialize FastAPI application instance
-app = FastAPI(
-    title="Notepad Backend API"
+# Enable CORS for frontend React access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],   # frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-
-# Register authentication routes with the main application
-# All routes defined in auth_routes will now be available
+# Register routers 
 app.include_router(auth_router)
+app.include_router(notes_router)    
+app.include_router(ai_router)
+
