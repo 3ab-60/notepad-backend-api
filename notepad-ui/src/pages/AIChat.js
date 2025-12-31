@@ -1,5 +1,4 @@
-// ================== AI CHAT PAGE (FINAL STABLE VERSION) ==================
-// Fixes the main problems you faced:
+// =================================AI CHAT PAGE ======================================
 // ✔ Messages grow fully (no clipping)
 // ✔ 3rd / 4th / more messages continue scrolling properly
 // ✔ Auto-scroll to latest message works always

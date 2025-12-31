@@ -110,12 +110,5 @@ def pending_tasks(db: Session = Depends(get_db), user=Depends(get_current_user))
     return db.query(Note).filter(Note.owner_id == user.id, Note.is_completed == False).all()
 
 
-# 3️⃣ Calendar View — Tasks ordered by due date
-@router.get("/calendar", response_model=list[NoteOut])
-def calendar_view(db: Session = Depends(get_db), user=Depends(get_current_user)):
-    """
-    Displays tasks in ascending order of due_date.
-    Works like a calendar view for better planning & scheduling.
-    """
-    return db.query(Note).filter(Note.owner_id == user.id).order_by(Note.due_date.asc()).all()
+
 

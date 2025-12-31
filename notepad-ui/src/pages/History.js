@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, Typography, Divider } from "@mui/material";
 import { api } from "../api";
-import Navbar from "../components/Navbar";   // <-- Added Navbar import
+import Navbar from "../components/Navbar";   
 
 export default function History() {
 
@@ -41,7 +41,7 @@ export default function History() {
 
   return (
     <>
-      <Navbar /> {/* 🔥 Navbar inserted without altering anything else */}
+      <Navbar /> {/* Navbar inserted */}
 
       <div style={{ padding: 25 }}>
         <Typography variant="h4">📜 History</Typography>
