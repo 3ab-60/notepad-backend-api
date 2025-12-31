@@ -19,6 +19,9 @@ def verify_password(password: str, hashed: str):
 
 
 # ---------------------- JWT TOKEN CREATION ----------------------
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Import datetime utilities for token expiration handling
 from datetime import datetime, timedelta
@@ -27,7 +30,7 @@ from datetime import datetime, timedelta
 from jose import jwt
 
 # Secret key used to sign JWT tokens
-SECRET_KEY = "supersecretkey"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # Algorithm used for JWT encoding and decoding
 ALGORITHM = "HS256"

@@ -8,9 +8,8 @@ from openai import OpenAI   # install via: pip install openai
 
 router = APIRouter(prefix="/ai", tags=["AI Assistant"])
 
-HF_API_KEY = os.getenv("HF_API_KEY")
-MODEL = "meta-llama/Meta-Llama-3-8B-Instruct:novita"  # <-- fixed model name
-
+HF_API_KEY = os.getenv("HF_API_KEY")          # reads token from .env
+MODEL = os.getenv("HF_MODEL")                 # reads your model ID from .env
 
 # Request schema
 class PromptRequest(BaseModel):
