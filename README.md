@@ -61,7 +61,7 @@ Anyone running must create `.env` manually.
 `.env` contents:
 
 ```
-HF_API_KEY=your_key
+HF_API_KEY=your_HF_key
 HF_MODEL=meta-llama/Meta-Llama-3-8B-Instruct:novita
 SECRET_KEY=your_secret_key
 ```
@@ -96,14 +96,16 @@ pip install -r requirements.txt
 Create `.env` file in root
 
 ```
-HF_API_KEY=your_key
+HF_API_KEY=your_HF_key
 HF_MODEL=meta-llama/Meta-Llama-3-8B-Instruct:novita
-SECRET_KEY=your_secret
+SECRET_KEY=your_secret_key
 ```
 
 Run backend server
 
 ```bash
+python -m uvicorn app.main:app --reload
+or
 uvicorn app.main:app --reload
 ```
 
