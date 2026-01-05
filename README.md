@@ -63,7 +63,7 @@ Anyone running must create `.env` manually.
 ```
 HF_API_KEY=your_key
 HF_MODEL=meta-llama/Meta-Llama-3-8B-Instruct:novita
-SECRET_KEY=your_secret
+SECRET_KEY=your_secret_key
 ```
 
 I kept DB URL & API URLs inside code, so others can run without changing them.
